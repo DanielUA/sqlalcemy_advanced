@@ -37,6 +37,11 @@ class Student(Base):
         secondary='teacher_to_students', 
         back_populates='students'
         )
+    contacts = relationship(
+        'Contact', 
+        back_populates='student', 
+        cascade='all, delete-orphan'
+        )
     
     @hybrid_property
     def fullname(self):
@@ -54,7 +59,7 @@ class Contact(Base):
         ondelete='CASCADE', 
         onupdate='CASCADE'
             ))
-    student = relationship('Student', backref='contacts') 
+    student = relationship('Student', back_populates='contacts') 
 
     @hybrid_property
     def fullname(self):

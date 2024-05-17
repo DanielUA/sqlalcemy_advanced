@@ -3,7 +3,7 @@ from sqlalchemy import and_, between
 from sqlalchemy.orm import joinedload, subqueryload
 
 from conf.session import get_db
-from conf.models import Student, Teacher, TeacherStudent
+from conf.models import Student, Teacher, TeacherStudent, Contact
 
 session = next(get_db())
 
@@ -43,7 +43,7 @@ session = next(get_db())
 #             r['students'].append({'id': s.id, 'fullname': s.fullname})
 #         print(r)
 
-def get_techers_by_data():
+# def get_techers_by_data():
     # teachers = session.query(Teacher).options(
     #     joinedload(Teacher.students, innerjoin=True)
     #     ).filter(
@@ -67,14 +67,48 @@ def get_techers_by_data():
     #         r['students'].append({'id': s.id, 'fullname': s.fullname})
     #     print(r)
 
-def get_student_join():
-    students = session.query(Student).join(Student.teachers).all()
-    for s in students:
-        columns = ['id', 'fullname', 'teachers']
-        r = {'id': s.id, 'fullname': s.fullname, 'teachers': []}
-        for t in s.teachers:
-            r['teachers'].append({'id': t.id, 'fullname': t.fullname})
-        print(r)
+# def get_student_contact():
+#     students = session.query(Student).join(Contact).all()
+#     for s in students:
+#         r = {'id': s.id, 'fullname': s.fullname, 'contacts': []}
+#         for c in s.contacts:
+#             r['contacts'].append({
+#                 'id': c.id, 
+#                 'fullname': c.fullname, 
+#                 'phone': c.phone,
+#                 'email': c.email
+#                 })
+#         print(r)
+
+# def get_info():
+#     student = session.query(Student.id, Student.fullname, Teacher.fullname.label(
+#         'teacher_fullname'), Contact.fullname.label(
+#             'contact_fullname')).select_from(Student).join(
+#                 TeacherStudent).join(Teacher).join(
+#                     Contact).all()
+#     for s in student:
+#         r = {
+#             'id': s.id, 
+#             'fullname': s.fullname, 
+#             'teacher_fullname': s.fullname, 
+#             'contact_fullname': s.contact_fullname
+#             }
+#         print(r)
+
+"""UPDATE"""
+
+# def update_student(s_id, teachers: list[Teacher]):
+#     student = session.query(Student).filter_by(id=s_id).first()
+#     student.teachers = teachers
+#     session.commit()
+#     return student
+
+"""DELETE"""
+
+def remove_student(s_id):
+    student = session.query(Student).filter_by(id=s_id).first()
+    session.delete(student)
+    session.commit()
 
 
 if __name__ == "__main__":
@@ -83,3 +117,10 @@ if __name__ == "__main__":
     # get_techers()
     # get_techers_outerjoin()
     # get_techers_by_data()
+    # get_student _contact()
+    # get_info()
+    # teach_for_add = session.query(
+    #     Teacher).filter(Teacher.id.in_([4,6,8])).all()
+    # stud = update_student(8, teach_for_add)
+    # print(stud)
+    remove_student(2)
